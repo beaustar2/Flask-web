@@ -8,10 +8,19 @@
         update_cache: yes
       when: "'Ubuntu' in ansible_distribution"
 
-    - name: Install Java-11 on Ubuntu
-      ansible.builtin.apt:
-        name: java-11
-        state: present
+    - name: Set Java 11 as the active version on Ubuntu
+      ansible.builtin.shell:
+        cmd: update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+      when: "'Ubuntu' in ansible_distribution"
+
+    - name: Add Jenkins GPG key
+      ansible.builtin.apt_key:
+        url: "https://pkg.jenkins.io/debian/jenkins.io.key"
+      when: "'Ubuntu' in ansible_distribution"
+
+    - name: Add Jenkins repository
+      ansible.builtin.apt_repository:
+        repo: "deb http://pkg.jenkins.io/debian-stable binary/"
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Install OpenJDK 11 on Ubuntu
@@ -20,53 +29,35 @@
         state: present
       when: "'Ubuntu' in ansible_distribution"
 
-    - name: Set Java 11 as the active version on Ubuntu
-      ansible.builtin.shell:
-        cmd: update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
-      when: "'Ubuntu' in ansible_distribution' and java_alternatives.rc == 0"
-
-    - name: Add Jenkins GPG key
-      ansible.builtin.apt_key:
-        url: "https://pkg.jenkins.io/debian/jenkins.io.key"
-      when: "'Ubuntu' in ansible_distribution'"
-
-    - name: Add Jenkins repository
-      ansible.builtin.apt_repository:
-        repo: "deb http://pkg.jenkins.io/debian-stable binary/"
-      when: "'Ubuntu' in ansible_distribution'"
-
     - name: Install Jenkins on Ubuntu
       ansible.builtin.apt:
         name: jenkins
         state: present
-      when: "'Ubuntu' in ansible_distribution'"
+      when: "'Ubuntu' in ansible_distribution"
 
     - name: Delay for Jenkins service to start
-      ansible.builtin.pause:
+      pause:
         seconds: 30
-      when: "'Ubuntu' in ansible_distribution'"
+      when: "'Ubuntu' in ansible_distribution"
 
     - name: Display Jenkins Initial Admin Password
       ansible.builtin.shell:
         cmd: sudo cat /var/lib/jenkins/secrets/initialAdminPassword
       register: jenkins_initial_password
-      when: "'Ubuntu' in ansible_distribution' and java_alternatives.rc == 0'"
 
     - name: Display Jenkins Initial Admin Password Info
       ansible.builtin.debug:
         var: jenkins_initial_password.stdout_lines
-      when: "'Ubuntu' in ansible_distribution' and java_alternatives.rc == 0'"
-
-    - name: Install Maven on Ubuntu
-      ansible.builtin.apt:
-        name: maven
-        state: present
-      when: "'Ubuntu' in ansible_distribution'"
 
   handlers:
     - name: Restart Jenkins service
       ansible.builtin.service:
         name: jenkins
         state: restarted
-      when: "'Ubuntu' in ansible_distribution' and java_alternatives.rc == 0'"
+
+    - name: Install Maven on Ubuntu
+      ansible.builtin.apt:
+        name: maven
+        state: present
+      when: "'Ubuntu' in ansible_distribution"
 ...
