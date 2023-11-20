@@ -8,6 +8,11 @@
         url: "https://pkg.jenkins.io/debian/jenkins.io.key"
       when: "'Ubuntu' in ansible_distribution"
 
+    - name: Import Jenkins GPG key
+      ansible.builtin.shell:
+        cmd: "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -"
+      when: "'Ubuntu' in ansible_distribution"
+
     - name: Update package repositories
       ansible.builtin.apt:
         update_cache: yes
