@@ -1,6 +1,6 @@
 ---
 - name: Install Jenkins and Ansible on Ubuntu
-  hosts: n4u
+  hosts: n1
   become: true
   tasks:
     - name: Update package repositories
