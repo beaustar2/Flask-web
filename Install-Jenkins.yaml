@@ -8,6 +8,12 @@
         update_cache: yes
       when: "'Ubuntu' in ansible_distribution"
 
+    - name: Install OpenJDK 11 on Ubuntu
+      ansible.builtin.apt:
+        name: openjdk-11-jdk
+        state: present
+      when: "'Ubuntu' in ansible_distribution"
+
     - name: Check if Java alternatives exist
       ansible.builtin.shell:
         cmd: update-alternatives --list java
@@ -29,12 +35,6 @@
     - name: Add Jenkins repository
       ansible.builtin.apt_repository:
         repo: "deb http://pkg.jenkins.io/debian-stable binary/"
-      when: "'Ubuntu' in ansible_distribution"
-
-    - name: Install OpenJDK 11 on Ubuntu
-      ansible.builtin.apt:
-        name: openjdk-11-jdk
-        state: present
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Install Jenkins on Ubuntu
