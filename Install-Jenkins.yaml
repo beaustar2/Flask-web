@@ -11,8 +11,13 @@
 
     - name: Add Jenkins repository
       ansible.builtin.apt_key:
-        keyserver: keyserver.ubuntu.com
-        id: "9B7D32F2D50582E6"
+        url: "https://pkg.jenkins.io/debian/jenkins.io.key"
+      when: "'Ubuntu' in ansible_distribution"
+
+    - name: Add Jenkins repository
+      ansible.builtin.apt_repository:
+        repo: "deb http://pkg.jenkins.io/debian-stable binary/"
+        state: present
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Update package repositories
