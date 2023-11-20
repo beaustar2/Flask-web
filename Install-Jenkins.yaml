@@ -3,13 +3,8 @@
   hosts: n1
   become: true
   tasks:
-    - name: Add Jenkins GPG key
-      ansible.builtin.apt_key:
-        url: "https://pkg.jenkins.io/debian/jenkins.io.key"
-      when: "'Ubuntu' in ansible_distribution"
-
     - name: Import Jenkins GPG key
-      ansible.builtin.shell:
+      ansible.builtin.command:
         cmd: "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -"
       when: "'Ubuntu' in ansible_distribution"
 
@@ -17,6 +12,11 @@
       ansible.builtin.apt_repository:
         repo: "deb [arch=amd64] http://pkg.jenkins.io/debian-stable binary/"
         state: present
+        update_cache: yes
+      when: "'Ubuntu' in ansible_distribution"
+
+    - name: Update package repositories
+      ansible.builtin.apt:
         update_cache: yes
       when: "'Ubuntu' in ansible_distribution"
 
@@ -38,7 +38,7 @@
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Delay for Jenkins service to start
-      pause:
+      ansible.builtin.pause:
         seconds: 30
       when: "'Ubuntu' in ansible_distribution"
 
