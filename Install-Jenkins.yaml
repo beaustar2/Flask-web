@@ -1,4 +1,4 @@
----
+--
 - name: Install Jenkins, Java 11, and Maven on Ubuntu
   hosts: n1
   become: true
@@ -8,9 +8,14 @@
         update_cache: yes
       when: "'Ubuntu' in ansible_distribution"
 
-    - name: Add Jenkins GPG key
+    - name: Set Java 11 as the active version on Ubuntu
       ansible.builtin.shell:
-        cmd: "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -"
+        cmd: update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+      when: "'Ubuntu' in ansible_distribution"
+
+    - name: Add Jenkins GPG key
+      ansible.builtin.apt_key:
+        url: "https://pkg.jenkins.io/debian/jenkins.io.key"
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Add Jenkins repository
