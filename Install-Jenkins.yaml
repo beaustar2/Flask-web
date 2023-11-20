@@ -1,45 +1,27 @@
 ---
-- name: Install Jenkins, Java 11, and Maven on Ubuntu
-  hosts: n1
+- name: Install Jenkins and Ansible on Ubuntu
+  hosts: n4u
   become: true
   tasks:
-    - name: Import Jenkins GPG key
-      ansible.builtin.apt_key:
-        url: "https://pkg.jenkins.io/debian/jenkins.io.key"
-        state: present
-      when: "'Ubuntu' in ansible_distribution"
-
-    - name: Add Jenkins repository
-      ansible.builtin.apt_repository:
-        repo: "deb http://pkg.jenkins.io/debian-stable binary/"
-        state: present
-      when: "'Ubuntu' in ansible_distribution"
-
     - name: Update package repositories
       ansible.builtin.apt:
         update_cache: yes
       when: "'Ubuntu' in ansible_distribution"
 
-    - name: Install OpenJDK 11 on Ubuntu
-      ansible.builtin.apt:
-        name: openjdk-11-jdk
-        state: present
+    - name: Add Jenkins GPG key
+      ansible.builtin.apt_key:
+        url: "https://pkg.jenkins.io/debian/jenkins.io.key"
       when: "'Ubuntu' in ansible_distribution"
 
-    - name: Set Java 11 as the active version on Ubuntu
-      ansible.builtin.shell:
-        cmd: update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+    - name: Add Jenkins repository
+      ansible.builtin.apt_repository:
+        repo: "deb http://pkg.jenkins.io/debian-stable binary/"
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Install Jenkins on Ubuntu
       ansible.builtin.apt:
         name: jenkins
         state: present
-      when: "'Ubuntu' in ansible_distribution"
-
-    - name: Delay for Jenkins service to start
-      ansible.builtin.pause:
-        seconds: 30
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Display Jenkins Initial Admin Password
@@ -50,16 +32,4 @@
     - name: Display Jenkins Initial Admin Password Info
       ansible.builtin.debug:
         var: jenkins_initial_password.stdout_lines
-
-  handlers:
-    - name: Restart Jenkins service
-      ansible.builtin.service:
-        name: jenkins
-        state: restarted
-
-    - name: Install Maven on Ubuntu
-      ansible.builtin.apt:
-        name: maven
-        state: present
-      when: "'Ubuntu' in ansible_distribution"
 ...
