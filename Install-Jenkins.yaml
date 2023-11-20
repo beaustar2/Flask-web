@@ -8,10 +8,18 @@
         update_cache: yes
       when: "'Ubuntu' in ansible_distribution"
 
+    - name: Check if Java alternatives exist
+      ansible.builtin.shell:
+        cmd: update-alternatives --list java
+      register: java_alternatives
+      changed_when: false
+      ignore_errors: true
+      when: "'Ubuntu' in ansible_distribution"
+
     - name: Set Java 11 as the active version on Ubuntu
       ansible.builtin.shell:
         cmd: update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
-      when: "'Ubuntu' in ansible_distribution"
+      when: "'Ubuntu' in ansible_distribution" and "java" in java_alternatives.stdout_lines
 
     - name: Add Jenkins GPG key
       ansible.builtin.apt_key:
