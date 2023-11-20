@@ -13,14 +13,11 @@
         cmd: "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -"
       when: "'Ubuntu' in ansible_distribution"
 
-    - name: Update package repositories
-      ansible.builtin.apt:
-        update_cache: yes
-      when: "'Ubuntu' in ansible_distribution"
-
     - name: Add Jenkins repository
       ansible.builtin.apt_repository:
-        repo: "deb http://pkg.jenkins.io/debian-stable binary/"
+        repo: "deb [arch=amd64] http://pkg.jenkins.io/debian-stable binary/"
+        state: present
+        update_cache: yes
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Install OpenJDK 11 on Ubuntu
