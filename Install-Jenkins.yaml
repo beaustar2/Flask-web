@@ -52,23 +52,23 @@
       ansible.builtin.shell:
         cmd: sudo cat /var/lib/jenkins/secrets/initialAdminPassword
       register: jenkins_initial_password
-      when: "'Ubuntu' in ansible_distribution"
+      when: "'Ubuntu' in ansible_distribution' and java_alternatives.rc == 0"
 
     - name: Display Jenkins Initial Admin Password Info
       ansible.builtin.debug:
         var: jenkins_initial_password.stdout_lines
-      when: "'Ubuntu' in ansible_distribution"
+      when: "'Ubuntu' in ansible_distribution' and java_alternatives.rc == 0"
 
   handlers:
     - name: Restart Jenkins service
       ansible.builtin.service:
         name: jenkins
         state: restarted
-      when: "'Ubuntu' in ansible_distribution"
+      when: "'Ubuntu' in ansible_distribution' and java_alternatives.rc == 0"
 
     - name: Install Maven on Ubuntu
       ansible.builtin.apt:
         name: maven
         state: present
-      when: "'Ubuntu' in ansible_distribution"
+      when: "'Ubuntu' in ansible_distribution'"
 ...
