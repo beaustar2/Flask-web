@@ -4,15 +4,15 @@
   become: true
   tasks:
     - name: Import Jenkins GPG key
-      ansible.builtin.command:
-        cmd: "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -"
+      ansible.builtin.get_url:
+        url: "https://pkg.jenkins.io/debian/jenkins.io.key"
+        dest: "/tmp/jenkins.io.key"
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Add Jenkins repository
-      ansible.builtin.apt_repository:
-        repo: "deb [arch=amd64] http://pkg.jenkins.io/debian-stable binary/"
-        state: present
-        update_cache: yes
+      ansible.builtin.apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: "9B7D32F2D50582E6"
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Update package repositories
