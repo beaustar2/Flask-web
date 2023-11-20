@@ -19,7 +19,7 @@
     - name: Set Java 11 as the active version on Ubuntu
       ansible.builtin.shell:
         cmd: update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
-      when: "'Ubuntu' in ansible_distribution" and "java" in java_alternatives.stdout_lines
+      when: "'Ubuntu' in ansible_distribution' and java_alternatives.rc == 0"
 
     - name: Add Jenkins GPG key
       ansible.builtin.apt_key:
@@ -44,7 +44,7 @@
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Delay for Jenkins service to start
-      pause:
+      ansible.builtin.pause:
         seconds: 30
       when: "'Ubuntu' in ansible_distribution"
 
@@ -52,16 +52,19 @@
       ansible.builtin.shell:
         cmd: sudo cat /var/lib/jenkins/secrets/initialAdminPassword
       register: jenkins_initial_password
+      when: "'Ubuntu' in ansible_distribution"
 
     - name: Display Jenkins Initial Admin Password Info
       ansible.builtin.debug:
         var: jenkins_initial_password.stdout_lines
+      when: "'Ubuntu' in ansible_distribution"
 
   handlers:
     - name: Restart Jenkins service
       ansible.builtin.service:
         name: jenkins
         state: restarted
+      when: "'Ubuntu' in ansible_distribution"
 
     - name: Install Maven on Ubuntu
       ansible.builtin.apt:
