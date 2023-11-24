@@ -1,9 +1,62 @@
-from flask import Flask
-app = Flask(__name__)
+pipeline {
+    agent any
 
-@app.route("/")
-def index():
-    return '<html><body><h1>Hello there</h1><h3>Welcome to my aspiring journey as a DevOps Engineer. I am currently a work in progress, but hey, aren\'t we all? Feel free to explore this space and discover the exciting things I am building on my way to becoming a seasoned DevOps pro! Stay tuned for more updates and happy coding!</h3></body></html>'
+    environment {
+        UBUNTU_SERVER = '172.31.42.221'
+        AMAZON_LINUX_SERVER = '172.31.34.127'
+        APP_PATH = '/path/to/your/app'
+        APP_SERVICE = 'your-app-service'
+        SSH_CREDENTIALS_ID = 'YOUR_SSH_CREDENTIALS_ID'
+    }
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    sh 'python -m venv venv'
+                    sh 'source venv/bin/activate && pip install -r requirements.txt'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    sh 'source venv/bin/activate && python -m unittest discover'
+                }
+            }
+        }
+
+        stage('Deploy to Ubuntu Server') {
+            steps {
+                script {
+                    ansibleDeploy(UBUNTU_SERVER)
+                }
+            }
+        }
+
+        stage('Deploy to Amazon Linux Server') {
+            steps {
+                script {
+                    ansibleDeploy(AMAZON_LINUX_SERVER)
+                }
+            }
+        }
+    }
+}
+
+def ansibleDeploy(server) {
+    withCredentials([sshUserPrivateKey(credentialsId: SSH_CREDENTIALS_ID, keyFileVariable: 'SSH_KEY')]) {
+        sh """
+            ansible-playbook -i "${server}," -e "app_path=${APP_PATH} app_service=${APP_SERVICE}" -u ec2-user --private-key=\$SSH_KEY -v ansible/deploy.yml
+        """
+    }
+}
