@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,34 +7,45 @@
     <title>DevOps Journey</title>
     <!-- Add Bootstrap CDN link for styling -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 56px; /* Adjust the top padding to accommodate the fixed navbar */
+        }
+    </style>
 </head>
 <body>
     <!-- Add Bootstrap navbar for navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <a class="navbar-brand" href="/">DevOps Journey</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
                     <a class="nav-link" href="/">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/projects">Projects</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/about">About Me</a>
+                    <a class="nav-link" href="/Aboutus">About US</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/contact">Contact</a>
+                    <a class="nav-link" href="/Contactus">Contact US</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <div class="container mt-3">
-        <h1>Welcome to my aspiring journey as a DevOps Engineer!</h1>
+    <div class="container mt-5">
+        <h1>Welcome to our aspiring journey as DevOps Engineers!</h1>
         <p>
-            I'm currently a work in progress, but hey, aren't we all?
-            Feel free to explore this space and discover the exciting things I'm building on my way to becoming a seasoned DevOps pro!
+            We're currently a work in progress, but hey, aren't we all?
+            Feel free to explore this space and discover the exciting things we've building on our way to becoming seasoned DevOps pros!
             Stay tuned for more updates and happy coding!
         </p>
     </div>
