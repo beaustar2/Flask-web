@@ -11,27 +11,22 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
-
 
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
 @app.route('/')
 def home():
     return render_template('index.html')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -43,29 +38,24 @@ def login():
             return redirect(url_for('home'))
     return render_template('login.html')
 
-
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
 
-
 @app.route('/projects')
 def projects():
     projects = Project.query.all()
     return render_template('projects.html', projects=projects)
 
-
-@app.route('/about')
+@app.route('/Aboutus')
 def about():
-    return render_template('about.html')
+    return render_template('Aboutus.html')
 
-
-@app.route('/contact')
+@app.route('/Contactus')
 def contact():
-    return render_template('contact.html')
-
+    return render_template('Contactus.html')
 
 if __name__ == "__main__":
     with app.app_context():
