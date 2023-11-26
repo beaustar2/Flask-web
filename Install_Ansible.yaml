@@ -1,6 +1,6 @@
 ---
 - name: Install Jenkins, Java 11, and Maven on Ubuntu
-  hosts: n1
+  hosts: nlocalhost
   become: true
   tasks:
     - name: Download Jenkins GPG key
@@ -10,9 +10,9 @@
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Set up Jenkins repository
-      ansible.builtin.shell:
-        cmd: |
-          echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/"
+        state: present
       when: "'Ubuntu' in ansible_distribution"
 
     - name: Update package repositories
@@ -62,4 +62,3 @@
         name: maven
         state: present
       when: "'Ubuntu' in ansible_distribution"
-...
